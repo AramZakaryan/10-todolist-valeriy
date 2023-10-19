@@ -1,6 +1,6 @@
 import React from "react";
 // import './App.css';
-// import React, {useState} from 'react';
+// import React, {Reducer, useState, useReducer} from 'react';
 // import {TaskType, Todolist} from './Todolist';
 // import {v1} from 'uuid';
 // import {AddItemForm} from "./AddItemForm";
@@ -17,7 +17,16 @@ import React from "react";
 // } from "@mui/material";
 // import {blue, green, grey, lightGreen, red, yellow} from "@mui/material/colors";
 // import {Menu} from "@mui/icons-material";
-// /* forDel*/ import "./state/todolistsReducer"
+// /* forDel*/
+// import "./state/todolistsReducer"
+// import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReducer} from "./state/tasksReducer";
+// import {
+//     addTodolistAC,
+//     changeFilterAC, changeTodolistTitleAC,
+//     removeTodolistAC,
+//     todolistsActionType,
+//     todolistsReducer
+// } from "./state/todolistsReducer";
 //
 // export type FilterValuesType = "all" | "active" | "completed";
 // export type TodolistType = {
@@ -31,104 +40,99 @@ import React from "react";
 // }
 //
 //
-// function App() {
+// function AppWithReducer() {
 //     const todolistId1 = v1();
 //     const todolistId2 = v1();
 //
-//     const [todolists, setTodolists] = useState<Array<TodolistType>>([
-//         {todolistId: todolistId1, title: "What to learn", filter: "all"},
-//         {todolistId: todolistId2, title: "What to buy", filter: "all"}
-//     ])
-//     const [tasks, setTasks] = useState<TasksStateType>({
-//         [todolistId1]: [
-//             {id: v1(), title: "HTML&CSS", isDone: true},
-//             {id: v1(), title: "JS", isDone: true}
-//         ],
-//         [todolistId2]: [
-//             {id: v1(), title: "Milk", isDone: true},
-//             {id: v1(), title: "React Book", isDone: true}
+//     const [todolists, dispatchTodolists] = useReducer<Reducer<Array<TodolistType>, todolistsActionType>>(
+//         todolistsReducer,
+//         [
+//             {todolistId: todolistId1, title: "What to learn", filter: "all"},
+//             {todolistId: todolistId2, title: "What to buy", filter: "all"}
 //         ]
-//     });
+//     )
+//     const [tasks, dispatchTasks] = useReducer(
+//         tasksReducer,
+//         {
+//             [todolistId1]: [
+//                 {id: v1(), title: "HTML&CSS", isDone: true},
+//                 {id: v1(), title: "JS", isDone: true}
+//             ],
+//             [todolistId2]: [
+//                 {id: v1(), title: "Milk", isDone: true},
+//                 {id: v1(), title: "React Book", isDone: true}
+//             ]
+//         }
+//     )
 //
 //     const [isLightMode, setIsLightMode] = useState<"light" | "dark">("light")
 //
 //     function removeTask(id: string, todolistId: string) {
-//         //достанем нужный массив по todolistId:
-//         let todolistTasks = tasks[todolistId];
-//         // перезапишем в этом объекте массив для нужного тудулиста отфилтрованным массивом:
-//         tasks[todolistId] = todolistTasks.filter(t => t.id != id);
-//         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-//         setTasks({...tasks});
+//         // let todolistTasks = tasks[todolistId];
+//         // tasks[todolistId] = todolistTasks.filter(t => t.id != id);
+//         // setTasks({...tasks});
+//         dispatchTasks(removeTaskAC(id, todolistId))
 //     }
 //
 //     function addTask(title: string, todolistId: string) {
-//         let task = {id: v1(), title: title, isDone: false};
-//         //достанем нужный массив по todolistId:
-//         let todolistTasks = tasks[todolistId];
-//         // перезапишем в этом объекте массив для нужного тудулиста копией, добавив в начало новую таску:
-//         tasks[todolistId] = [task, ...todolistTasks];
-//         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-//         setTasks({...tasks});
+//         // let task = {id: v1(), title: title, isDone: false};
+//         // let todolistTasks = tasks[todolistId];
+//         // tasks[todolistId] = [task, ...todolistTasks];
+//         // setTasks({...tasks});
+//         dispatchTasks( addTaskAC(title,todolistId))
 //     }
 //
 //     function changeStatus(id: string, isDone: boolean, todolistId: string) {
-//         //достанем нужный массив по todolistId:
-//         let todolistTasks = tasks[todolistId];
-//         // найдём нужную таску:
-//         let task = todolistTasks.find(t => t.id === id);
-//         //изменим таску, если она нашлась
-//         if (task) {
-//             task.isDone = isDone;
-//             // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-//             setTasks({...tasks});
-//         }
-//
+//         // let todolistTasks = tasks[todolistId];
+//         // let task = todolistTasks.find(t => t.id === id);
+//         // if (task) {
+//         //     task.isDone = isDone;
+//         //     // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
+//         //     setTasks({...tasks});
+//         // }
+//         dispatchTasks(changeTaskStatusAC(id,isDone,todolistId))
 //     }
 //
 //     function changeTaskTitle(id: string, newTitle: string, todolistId: string) {
-//         //достанем нужный массив по todolistId:
-//         let todolistTasks = tasks[todolistId];
-//         // найдём нужную таску:
-//         let task = todolistTasks.find(t => t.id === id);
-//         //изменим таску, если она нашлась
-//         if (task) {
-//             task.title = newTitle;
-//             // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-//             setTasks({...tasks});
-//         }
+//         // let todolistTasks = tasks[todolistId];
+//         // let task = todolistTasks.find(t => t.id === id);
+//         // if (task) {
+//         //     task.title = newTitle;
+//         //     setTasks({...tasks});
+//         // }
+//         dispatchTasks(changeTaskTitleAC(id, newTitle,todolistId))
 //     }
 //
 //     function changeFilter(value: FilterValuesType, todolistId: string) {
-//         let todolist = todolists.find(tl => tl.todolistId === todolistId);
-//         if (todolist) {
-//             todolist.filter = value;
-//             setTodolists([...todolists])
-//         }
+//         // let todolist = todolists.find(tl => tl.todolistId === todolistId);
+//         // if (todolist) {
+//         //     todolist.filter = value;
+//         //     setTodolists([...todolists])
+//         // }
+//         dispatchTodolists(changeFilterAC(todolistId, value))
 //     }
 //
 //     function removeTodolist(id: string) {
-//         // засунем в стейт список тудулистов, id которых не равны тому, который нужно выкинуть
-//         setTodolists(todolists.filter(tl => tl.todolistId != id));
-//         // удалим таски для этого тудулиста из второго стейта, где мы храним отдельно таски
-//         delete tasks[id]; // удаляем св-во из объекта... значением которого являлся массив тасок
-//         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-//         setTasks({...tasks});
+//         // setTodolists(todolists.filter(tl => tl.todolistId != id));
+//         // delete tasks[id]; // удаляем св-во из объекта... значением которого являлся массив тасок
+//         // setTasks({...tasks});
+//         const removeTodolistAction =  removeTodolistAC(id)
+//         dispatchTodolists(removeTodolistAction)
+//         dispatchTasks(removeTodolistAction)
 //     }
 //
 //     const addTodolist = (title: string) => {
-//         let newTodolistId: string = v1()
-//         let newTodolist: TodolistType = {todolistId: newTodolistId, title: title, filter: "all"}
-//         setTodolists([...todolists, newTodolist])
-//         setTasks({...tasks, [newTodolistId]: []})
+//         // let newTodolist: TodolistType = {todolistId: newTodolistId, title: title, filter: "all"}
+//         // setTodolists([...todolists, newTodolist])
+//         // setTasks({...tasks, [newTodolistId]: []})
+//         const addTodolistAction = addTodolistAC(title, v1())
+//         dispatchTodolists(addTodolistAction)
+//         dispatchTasks(addTodolistAction)
 //     }
 //
 //     const changeTodolistTitle = (todolistId: string, title: string) => { // title is a new title
-//         // let todolistToBeChanged= todolists.find(tl => tl.id === todolistId)
-//         //  if (todolistToBeChanged){
-//         //      todolistToBeChanged.title=title
-//         //      setTodolists([...todolists])
-//         //  }
-//         setTodolists(todolists.map(tl => tl.todolistId === todolistId ? {...tl, title} : tl))
+//         // setTodolists(todolists.map(tl => tl.todolistId === todolistId ? {...tl, title} : tl))
+//         dispatchTodolists(changeTodolistTitleAC(todolistId,title))
 //     }
 //
 //     const changeModeHandler = () => {
@@ -160,7 +164,7 @@ import React from "react";
 //                             color={"inherit"}
 //                             onClick={changeModeHandler}
 //                     >
-//                         {isLightMode==="light"?"Set Dark":"Set Light"}
+//                         {isLightMode === "light" ? "Set Dark" : "Set Light"}
 //                     </Button>
 //                     <Button variant={"outlined"}
 //                             color={"inherit"}
@@ -223,6 +227,6 @@ import React from "react";
 //     );
 // }
 //
-// export default App;
+// export default AppWithReducer;
 //
 //
